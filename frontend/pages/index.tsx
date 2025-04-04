@@ -2,8 +2,18 @@ import Head from 'next/head'
 import { useState } from 'react'
 
 export default function Home() {
-  const [message, setMessage] = useState('')
-  const [response, setResponse] = useState('')
+import { v4 as uuidv4 } from 'uuid'
+
+const localIdKey = 'gsa_user_id'
+function getUserId() {
+  if (typeof window === 'undefined') return ''
+  let id = localStorage.getItem(localIdKey)
+  if (!id) {
+    id = uuidv4()
+    localStorage.setItem(localIdKey, id)
+  }
+  return id
+}
 
   const handleSubmit = async () => {
     const res = await fetch('/api/ask-ai', {
