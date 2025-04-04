@@ -6,16 +6,20 @@ import { v4 as uuidv4 } from 'uuid'
 
 const localIdKey = 'gsa_user_id'
 function getUserId() {
-  if (typeof window === 'undefined') return ''
-  let id = localStorage.getItem(localIdKey)
-  if (!id) {
-    id = uuidv4()
-    localStorage.setItem(localIdKey, id)
-  }
-  return id
-}
-
   const handleSubmit = async () => {
+    const userId = getUserId()
+    const res = await fetch('/api/ask-ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: message, userId })
+    })
+    const data = await res.json()
+    if (data.error) {
+      setResponse(`❌ ${data.error}`)
+    } else {
+      setResponse(`${data.result}\n\n🔁 Remaining trial uses: ${data.remaining}`)
+    }
+  }
     const res = await fetch('/api/ask-ai', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
